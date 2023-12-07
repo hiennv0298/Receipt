@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
 using static System.Windows.Forms.ListView;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Receipt
 {
@@ -15,9 +16,16 @@ namespace Receipt
 
         Font boldFont = new Font("Arial", 9, FontStyle.Bold);
         Font boldLargeFont = new Font("Arial", 12, FontStyle.Bold);
+        Font boldLargeConfirmFont = new Font("Arial", 10, FontStyle.Bold);
         Font boldSmallFont = new Font("Arial", 7, FontStyle.Bold);
+        Font boldSmall2Font = new Font("Arial", 8, FontStyle.Bold);
         Font regularFont = new Font("Arial", 8);
         SolidBrush brush = new SolidBrush(Color.Black);
+        Pen pen = new Pen(Color.Black);
+        StringFormat centerFormat = new StringFormat
+        {
+            Alignment = StringAlignment.Center
+        };
 
         float lineHeight = 16;
 
@@ -44,9 +52,27 @@ namespace Receipt
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtName.Text) || string.IsNullOrWhiteSpace(txtOrderNumber.Text) || (!int.TryParse(txtDeposit.Text, out _) && !string.IsNullOrWhiteSpace(txtDeposit.Text)))
+            if (string.IsNullOrWhiteSpace(txtTable.Text))
             {
-                MessageBox.Show("Nhập đúng thông tin khách hàng", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Nhập bàn", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtCashier.Text))
+            {
+                MessageBox.Show("Nhập thu ngân", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(txtDiscount.Text) && !int.TryParse(txtDiscount.Text, out _))
+            {
+                MessageBox.Show("Nhập mã giảm giá là số", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(txtOrderNumber.Text) && !int.TryParse(txtOrderNumber.Text, out _))
+            {
+                MessageBox.Show("Nhập mã hóa đơn là số", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -72,11 +98,6 @@ namespace Receipt
 
         private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            StringFormat centerFormat = new StringFormat
-            {
-                Alignment = StringAlignment.Center
-            };
-
             // Header content
             string[] headerLines = {
                                     "NHÀ HÀNG NAI VÀNG NEW",
@@ -124,7 +145,6 @@ namespace Receipt
             // Calculate column widths based on the available space
             float columnWidth = totalColumnWidth / items[0].SubItems.Count;
 
-            var pen = new Pen(Color.Black);
             graphics.DrawLine(pen, 9, y - 2, 305, y - 2);
             graphics.DrawString("#", fontBold, brush, x + 5, y);
             graphics.DrawLine(pen, x, y - 2, x, y + font.Height + 2);
@@ -138,7 +158,6 @@ namespace Receipt
             graphics.DrawString("TT", fontBold, brush, x + 250, y);
             graphics.DrawLine(pen, x + 295, y - 2, x + 295, y + font.Height + 2);
             graphics.DrawLine(pen, 9, y + fontBold.Height + 2, 305, y + font.Height + 2);
-
 
             y += 20;
             YPos += 20;
@@ -222,20 +241,37 @@ namespace Receipt
 
         void DrawConfirmation(PrintPageEventArgs e)
         {
+            var subtotal = CalculateTotal().ToString("N0") +"đ";
+            YPos += 10;
             e.Graphics.DrawString($"Tiền hàng", boldFont, brush, 10, YPos);
-            e.Graphics.DrawString($"Tiền hàng", boldFont, brush, 10, YPos);
-            YPos += boldFont.Height;
-            e.Graphics.DrawString($"Giảm giá", regularFont, brush, 10, YPos);
-            e.Graphics.DrawString($"Giảm giá", regularFont, brush, 10, YPos);
-            YPos += regularFont.Height;
+            e.Graphics.DrawString($"{subtotal}", boldFont, brush, 305 - MeasureString(subtotal, boldFont), YPos);
+            YPos += boldFont.Height + 4;
+            if (!string.IsNullOrWhiteSpace(txtDiscount.Text) && int.TryParse(txtDiscount.Text, out _))
+            {
+                e.Graphics.DrawString($"Giảm giá", regularFont, brush, 10, YPos);
+                e.Graphics.DrawString($"{subtotal}", regularFont, brush, 305 - MeasureString(subtotal, regularFont), YPos);
+                YPos += regularFont.Height + 4;
+            }
             e.Graphics.DrawString($"Phí phòng lạnh (5%)", regularFont, brush, 10, YPos);
-            e.Graphics.DrawString($"Phí phòng lạnh (5%)", regularFont, brush, 10, YPos);
-            YPos += regularFont.Height;
+            e.Graphics.DrawString($"{subtotal}", regularFont, brush, 305 - MeasureString(subtotal, regularFont), YPos);
+            YPos += regularFont.Height + 8;
             e.Graphics.DrawString($"Tiền trước thuế", boldFont, brush, 10, YPos);
-            e.Graphics.DrawString($"Tiền trước thuế", boldFont, brush, 10, YPos);
-            YPos += boldFont.Height;
+            e.Graphics.DrawString($"{subtotal}", boldFont, brush, 305 - MeasureString(subtotal, boldFont), YPos);
+            YPos += boldFont.Height + 4;
             e.Graphics.DrawString($"Thuế GTGT (8%)", regularFont, brush, 10, YPos);
-            e.Graphics.DrawString($"Thuế GTGT (8%)", regularFont, brush, 10, YPos);
+            e.Graphics.DrawString($"{subtotal}", regularFont, brush, 305 - MeasureString(subtotal, regularFont), YPos);
+            YPos += regularFont.Height + 10;
+            e.Graphics.DrawString($"Tổng thanh toán", boldLargeConfirmFont, brush, 10, YPos);
+            e.Graphics.DrawString($"{subtotal}", boldLargeConfirmFont, brush, 307 - MeasureString(subtotal, boldLargeConfirmFont), YPos);
+            YPos += boldLargeFont.Height + 4;
+            e.Graphics.DrawLine(pen, 9, YPos, 305, YPos);
+            YPos += 5;
+            e.Graphics.DrawString($"Còn phải thu", boldFont, brush, 10, YPos);
+            e.Graphics.DrawString($"{subtotal}", boldFont, brush, 305 - MeasureString(subtotal, boldFont), YPos);
+            YPos += boldFont.Height + 4;
+            e.Graphics.DrawLine(pen, 9, YPos, 305, YPos);
+            YPos += regularFont.Height + 10;
+            e.Graphics.DrawString("Vui lòng kiểm tra kỹ lại nội dung trước khi thanh toán!", boldSmall2Font, brush, 157, YPos, centerFormat);
         }
 
         float MeasureString(string text, Font font)
@@ -275,6 +311,32 @@ namespace Receipt
             }
 
             return lines.ToArray();
+        }
+
+        private double CalculateTotal()
+        {
+            double total = 0.0;
+
+            // Iterate through each item in the ListView
+            foreach (ListViewItem item in lsvReceipt.Items)
+            {
+                // Check if the item has enough sub-items (columns)
+                if (item.SubItems.Count >= 4)
+                {
+                    // Assuming column 4 is the index 3 (0-based index)
+                    string column4Value = item.SubItems[4].Text;
+
+                    // Parse the value to a double and add it to the total
+                    double column4DoubleValue;
+                    if (double.TryParse(column4Value, out column4DoubleValue))
+                    {
+                        total += column4DoubleValue;
+                    }
+                    // If parsing fails, you might want to handle it accordingly
+                }
+            }
+
+            return total;
         }
     }
 }
