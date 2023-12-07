@@ -28,19 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.txtTable = new System.Windows.Forms.TextBox();
             this.txtCashier = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chbVip = new System.Windows.Forms.CheckBox();
             this.dtOrderDate = new System.Windows.Forms.DateTimePicker();
             this.label5 = new System.Windows.Forms.Label();
             this.txtOrderNumber = new System.Windows.Forms.TextBox();
+            this.txtDeposit = new System.Windows.Forms.TextBox();
             this.txtDiscount = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.btnDelete = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
             this.nmuQuantity = new System.Windows.Forms.NumericUpDown();
             this.txtPrice = new System.Windows.Forms.TextBox();
@@ -54,13 +57,15 @@
             this.Quantity = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Price = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Total = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.xóaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnPrint = new System.Windows.Forms.Button();
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.btnReset = new System.Windows.Forms.Button();
-            this.chbVip = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nmuQuantity)).BeginInit();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -77,14 +82,14 @@
             this.txtTable.Location = new System.Drawing.Point(89, 36);
             this.txtTable.Name = "txtTable";
             this.txtTable.Size = new System.Drawing.Size(234, 20);
-            this.txtTable.TabIndex = 1;
+            this.txtTable.TabIndex = 0;
             // 
             // txtCashier
             // 
             this.txtCashier.Location = new System.Drawing.Point(89, 74);
             this.txtCashier.Name = "txtCashier";
             this.txtCashier.Size = new System.Drawing.Size(234, 20);
-            this.txtCashier.TabIndex = 2;
+            this.txtCashier.TabIndex = 1;
             // 
             // label2
             // 
@@ -101,8 +106,10 @@
             this.groupBox1.Controls.Add(this.dtOrderDate);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.txtOrderNumber);
+            this.groupBox1.Controls.Add(this.txtDeposit);
             this.groupBox1.Controls.Add(this.txtDiscount);
             this.groupBox1.Controls.Add(this.txtCashier);
+            this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.label1);
@@ -110,24 +117,34 @@
             this.groupBox1.Controls.Add(this.txtTable);
             this.groupBox1.Location = new System.Drawing.Point(48, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(343, 243);
-            this.groupBox1.TabIndex = 6;
+            this.groupBox1.Size = new System.Drawing.Size(343, 273);
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Thông tin hóa đơn";
+            // 
+            // chbVip
+            // 
+            this.chbVip.AutoSize = true;
+            this.chbVip.Location = new System.Drawing.Point(89, 179);
+            this.chbVip.Name = "chbVip";
+            this.chbVip.Size = new System.Drawing.Size(80, 17);
+            this.chbVip.TabIndex = 4;
+            this.chbVip.Text = "Phòng lạnh";
+            this.chbVip.UseVisualStyleBackColor = true;
             // 
             // dtOrderDate
             // 
             this.dtOrderDate.CustomFormat = "dd/MM/yyyy";
             this.dtOrderDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtOrderDate.Location = new System.Drawing.Point(89, 217);
+            this.dtOrderDate.Location = new System.Drawing.Point(89, 247);
             this.dtOrderDate.Name = "dtOrderDate";
             this.dtOrderDate.Size = new System.Drawing.Size(234, 20);
-            this.dtOrderDate.TabIndex = 5;
+            this.dtOrderDate.TabIndex = 6;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(51, 220);
+            this.label5.Location = new System.Drawing.Point(51, 250);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(32, 13);
             this.label5.TabIndex = 4;
@@ -135,22 +152,38 @@
             // 
             // txtOrderNumber
             // 
-            this.txtOrderNumber.Location = new System.Drawing.Point(89, 181);
+            this.txtOrderNumber.Location = new System.Drawing.Point(89, 211);
             this.txtOrderNumber.Name = "txtOrderNumber";
             this.txtOrderNumber.Size = new System.Drawing.Size(234, 20);
             this.txtOrderNumber.TabIndex = 5;
+            // 
+            // txtDeposit
+            // 
+            this.txtDeposit.Location = new System.Drawing.Point(89, 143);
+            this.txtDeposit.Name = "txtDeposit";
+            this.txtDeposit.Size = new System.Drawing.Size(234, 20);
+            this.txtDeposit.TabIndex = 3;
             // 
             // txtDiscount
             // 
             this.txtDiscount.Location = new System.Drawing.Point(89, 109);
             this.txtDiscount.Name = "txtDiscount";
             this.txtDiscount.Size = new System.Drawing.Size(234, 20);
-            this.txtDiscount.TabIndex = 3;
+            this.txtDiscount.TabIndex = 2;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(38, 146);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(45, 13);
+            this.label9.TabIndex = 2;
+            this.label9.Text = "Đặt cọc";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(18, 184);
+            this.label6.Location = new System.Drawing.Point(18, 214);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(65, 13);
             this.label6.TabIndex = 2;
@@ -167,7 +200,6 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.btnDelete);
             this.groupBox2.Controls.Add(this.btnAdd);
             this.groupBox2.Controls.Add(this.nmuQuantity);
             this.groupBox2.Controls.Add(this.txtPrice);
@@ -175,28 +207,19 @@
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.txtFoodName);
-            this.groupBox2.Location = new System.Drawing.Point(47, 261);
+            this.groupBox2.Location = new System.Drawing.Point(47, 291);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(344, 193);
-            this.groupBox2.TabIndex = 5;
+            this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Món ăn";
             // 
-            // btnDelete
-            // 
-            this.btnDelete.Location = new System.Drawing.Point(225, 142);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(99, 36);
-            this.btnDelete.TabIndex = 11;
-            this.btnDelete.Text = "Xóa món";
-            this.btnDelete.UseVisualStyleBackColor = true;
-            // 
             // btnAdd
             // 
-            this.btnAdd.Location = new System.Drawing.Point(90, 142);
+            this.btnAdd.Location = new System.Drawing.Point(225, 142);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(99, 36);
-            this.btnAdd.TabIndex = 10;
+            this.btnAdd.TabIndex = 3;
             this.btnAdd.Text = "Thêm món";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
@@ -206,14 +229,14 @@
             this.nmuQuantity.Location = new System.Drawing.Point(90, 104);
             this.nmuQuantity.Name = "nmuQuantity";
             this.nmuQuantity.Size = new System.Drawing.Size(234, 20);
-            this.nmuQuantity.TabIndex = 9;
+            this.nmuQuantity.TabIndex = 2;
             // 
             // txtPrice
             // 
             this.txtPrice.Location = new System.Drawing.Point(90, 67);
             this.txtPrice.Name = "txtPrice";
             this.txtPrice.Size = new System.Drawing.Size(234, 20);
-            this.txtPrice.TabIndex = 8;
+            this.txtPrice.TabIndex = 1;
             // 
             // label7
             // 
@@ -247,7 +270,7 @@
             this.txtFoodName.Location = new System.Drawing.Point(90, 32);
             this.txtFoodName.Name = "txtFoodName";
             this.txtFoodName.Size = new System.Drawing.Size(234, 20);
-            this.txtFoodName.TabIndex = 7;
+            this.txtFoodName.TabIndex = 0;
             // 
             // lsvReceipt
             // 
@@ -257,13 +280,15 @@
             this.Quantity,
             this.Price,
             this.Total});
+            this.lsvReceipt.ContextMenuStrip = this.contextMenuStrip1;
             this.lsvReceipt.GridLines = true;
+            this.lsvReceipt.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lsvReceipt.HideSelection = false;
             this.lsvReceipt.Location = new System.Drawing.Point(407, 12);
             this.lsvReceipt.MultiSelect = false;
             this.lsvReceipt.Name = "lsvReceipt";
-            this.lsvReceipt.Size = new System.Drawing.Size(706, 392);
-            this.lsvReceipt.TabIndex = 14;
+            this.lsvReceipt.Size = new System.Drawing.Size(706, 403);
+            this.lsvReceipt.TabIndex = 4;
             this.lsvReceipt.UseCompatibleStateImageBehavior = false;
             this.lsvReceipt.View = System.Windows.Forms.View.Details;
             // 
@@ -291,12 +316,27 @@
             this.Total.Text = "Thành tiền";
             this.Total.Width = 250;
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.xóaToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(95, 26);
+            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+            // 
+            // xóaToolStripMenuItem
+            // 
+            this.xóaToolStripMenuItem.Name = "xóaToolStripMenuItem";
+            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
+            this.xóaToolStripMenuItem.Text = "Xóa";
+            this.xóaToolStripMenuItem.Click += new System.EventHandler(this.xóaToolStripMenuItem_Click);
+            // 
             // btnPrint
             // 
-            this.btnPrint.Location = new System.Drawing.Point(1014, 418);
+            this.btnPrint.Location = new System.Drawing.Point(1014, 433);
             this.btnPrint.Name = "btnPrint";
             this.btnPrint.Size = new System.Drawing.Size(99, 36);
-            this.btnPrint.TabIndex = 13;
+            this.btnPrint.TabIndex = 3;
             this.btnPrint.Text = "In Hóa Đơn";
             this.btnPrint.UseVisualStyleBackColor = true;
             this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
@@ -307,29 +347,20 @@
             // 
             // btnReset
             // 
-            this.btnReset.Location = new System.Drawing.Point(909, 418);
+            this.btnReset.Location = new System.Drawing.Point(909, 433);
             this.btnReset.Name = "btnReset";
             this.btnReset.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.btnReset.Size = new System.Drawing.Size(99, 36);
-            this.btnReset.TabIndex = 12;
+            this.btnReset.TabIndex = 2;
             this.btnReset.Text = "Reset";
             this.btnReset.UseVisualStyleBackColor = true;
-            // 
-            // chbVip
-            // 
-            this.chbVip.AutoSize = true;
-            this.chbVip.Location = new System.Drawing.Point(89, 147);
-            this.chbVip.Name = "chbVip";
-            this.chbVip.Size = new System.Drawing.Size(80, 17);
-            this.chbVip.TabIndex = 4;
-            this.chbVip.Text = "Phòng lạnh";
-            this.chbVip.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
             // frmReceipt
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1149, 466);
+            this.ClientSize = new System.Drawing.Size(1149, 505);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.lsvReceipt);
@@ -343,6 +374,7 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nmuQuantity)).EndInit();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -375,10 +407,13 @@
         private System.Windows.Forms.Button btnPrint;
         private System.Drawing.Printing.PrintDocument printDocument1;
         private System.Windows.Forms.Button btnReset;
-        private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.TextBox txtDiscount;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox chbVip;
+        private System.Windows.Forms.TextBox txtDeposit;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem xóaToolStripMenuItem;
     }
 }
 

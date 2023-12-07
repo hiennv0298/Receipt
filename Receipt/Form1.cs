@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
 using static System.Windows.Forms.ListView;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Receipt
 {
@@ -33,6 +32,7 @@ namespace Receipt
         public frmReceipt()
         {
             InitializeComponent();
+            lsvReceipt.FullRowSelect = true;
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -70,7 +70,13 @@ namespace Receipt
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(txtOrderNumber.Text) && !int.TryParse(txtOrderNumber.Text, out _))
+            if (!string.IsNullOrWhiteSpace(txtDeposit.Text) && !int.TryParse(txtDeposit.Text, out _))
+            {
+                MessageBox.Show("Nhập đặt cọc là số", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtOrderNumber.Text) || !int.TryParse(txtOrderNumber.Text, out int orderNumber))
             {
                 MessageBox.Show("Nhập mã hóa đơn là số", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -85,15 +91,15 @@ namespace Receipt
             // Set the paper size for the receipt (80mm width)
             PaperSize paperSize = new PaperSize("CustomReceipt", Convert.ToInt32(80 * 0.03937 * 100), 32767); // 0.03937 inch per mm
             printDocument1.DefaultPageSettings.PaperSize = paperSize;
-            printDocument1.PrintPage += (s, d) => DrawListViewItems(d, lsvReceipt.Items);
-            printDocument1.PrintPage += (s, d) => DrawConfirmation(d);
             PrintPreviewDialog printPreviewDialog = new PrintPreviewDialog();
             printPreviewDialog.Document = printDocument1;
             printPreviewDialog.PrintPreviewControl.Zoom = 1.0;
             DialogResult result = printPreviewDialog.ShowDialog();
             // Start printing
             // printDocument1.Print();
-
+            orderNumber++;
+            txtOrderNumber.Text = orderNumber.ToString();
+            YPos = 200;
         }
 
         private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
@@ -116,10 +122,11 @@ namespace Receipt
             e.Graphics.DrawString($"Số: {txtOrderNumber.Text}", boldSmallFont, brush, 157, 100, centerFormat);
             e.Graphics.DrawString($"Ngày: ", boldFont, brush, 10, 129);
             e.Graphics.DrawString(dtOrderDate.Text, regularFont, brush, 50, 130);
-            e.Graphics.DrawString($"Bàn: A33", boldLargeFont, brush, 8, 150);
+            e.Graphics.DrawString($"Bàn: {txtTable.Text}", boldLargeFont, brush, 8, 150);
             e.Graphics.DrawString($"Thu ngân: ", boldFont, brush, 10, 174);
-            e.Graphics.DrawString($"Nguyễn Văn Hiền", regularFont, brush, 75, 175);
+            e.Graphics.DrawString($"{txtCashier.Text}", regularFont, brush, 75, 175);
 
+            DrawListViewItems(e, lsvReceipt.Items);
 
             // If there is more content to print, set the HasMorePages property to true
             // This will trigger another PrintPage event
@@ -142,9 +149,6 @@ namespace Receipt
             float spacing = 8;
             float yMultiple = 14;
 
-            // Calculate column widths based on the available space
-            float columnWidth = totalColumnWidth / items[0].SubItems.Count;
-
             graphics.DrawLine(pen, 9, y - 2, 305, y - 2);
             graphics.DrawString("#", fontBold, brush, x + 5, y);
             graphics.DrawLine(pen, x, y - 2, x, y + font.Height + 2);
@@ -165,31 +169,31 @@ namespace Receipt
             foreach (ListViewItem item in lsvReceipt.Items)
             {
                 var isLast = item == lsvReceipt.Items[lsvReceipt.Items.Count - 1];
+                float textWidth = MeasureString(item.SubItems[1].Text, font);
                 x = 10; // Reset x-coordinate for each row
                 for (int i = 0; i < item.SubItems.Count; i++)
                 {
                     switch (i)
                     {
                         case 0:
-                            DrawItem(pen, x + 20, y - 5, x + 20, y + font.Height + 2, font, brush, x + 4, y, e, item.SubItems[i].Text, yMultiple, isLast);
+                            DrawItem(pen, x + 20, y - 5, x + 20, y + font.Height + 2, font, brush, x + 4, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
                             break;
                         case 1:
-                            DrawItem(pen, x + 135, y - 5, x + 135, y + font.Height + 2, font, brush, x + 22, y, e, item.SubItems[i].Text, yMultiple, isLast);
+                            DrawItem(pen, x + 135, y - 5, x + 135, y + font.Height + 2, font, brush, x + 22, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
                             break;
                         case 2:
-                            DrawItem(pen, x + 165, y - 5, x + 165, y + font.Height + 2, font, brush, x + 140, y, e, item.SubItems[i].Text, yMultiple, isLast);
+                            DrawItem(pen, x + 165, y - 5, x + 165, y + font.Height + 2, font, brush, x + 140, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
                             break;
                         case 3:
-                            DrawItem(pen, x + 225, y - 5, x + 225, y + font.Height + 2, font, brush, x + 165, y, e, item.SubItems[i].Text, yMultiple, isLast);
+                            DrawItem(pen, x + 225, y - 5, x + 225, y + font.Height + 2, font, brush, x + 165, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
                             break;
                         case 4:
-                            DrawItem(pen, x + 295, y - 5, x + 295, y + font.Height + 2, font, brush, x + 228, y, e, item.SubItems[i].Text, yMultiple, isLast);
+                            DrawItem(pen, x + 295, y - 5, x + 295, y + font.Height + 2, font, brush, x + 228, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
                             break;
                     }
                 }
 
                 // Draw horizontal line below the data row
-                float textWidth = MeasureString(item.SubItems[1].Text, font);
                 if (textWidth > MaxWidthName)
                 {
                     graphics.DrawLine(pen, x, y - 5 - yMultiple, x, y + font.Height + 2 + yMultiple);
@@ -207,9 +211,11 @@ namespace Receipt
                     YPos += font.Height + spacing; // Move to the next row
                 }
             }
+
+            DrawConfirmation(e);
         }
 
-        void DrawItem(Pen pen, float x1Line, float y1Line, float x2Line, float y2Line, Font fontString, SolidBrush brush, float xString, float yString, PrintPageEventArgs e, string text, float yMultiple, bool isLastItem)
+        void DrawItem(Pen pen, float x1Line, float y1Line, float x2Line, float y2Line, Font fontString, SolidBrush brush, float xString, float yString, PrintPageEventArgs e, string text, float yMultiple, bool isLastItem, bool isMultipleLine)
         {
             var graphics = e.Graphics;
             float textWidth = MeasureString(text, fontString);
@@ -228,8 +234,16 @@ namespace Receipt
             {
                 if (isLastItem)
                 {
-                    graphics.DrawLine(pen, x1Line, y1Line, x2Line, y2Line);
-                    graphics.DrawString(text, fontString, brush, xString, yString);
+                    if (isMultipleLine)
+                    {
+                        graphics.DrawLine(pen, x1Line, y1Line - yMultiple, x2Line, y2Line + yMultiple);
+                        graphics.DrawString(text, fontString, brush, xString, yString);
+                    }
+                    else
+                    {
+                        graphics.DrawLine(pen, x1Line, y1Line, x2Line, y2Line);
+                        graphics.DrawString(text, fontString, brush, xString, yString);
+                    }
                 }
                 else
                 {
@@ -241,36 +255,63 @@ namespace Receipt
 
         void DrawConfirmation(PrintPageEventArgs e)
         {
-            var subtotal = CalculateTotal().ToString("N0") +"đ";
+            var subtotal = CalculateTotal();
+            var subTotalStr = subtotal.ToString("N0") + "đ";
+            double discount = 0.0;
+            double deposit = 0.0;
             YPos += 10;
             e.Graphics.DrawString($"Tiền hàng", boldFont, brush, 10, YPos);
-            e.Graphics.DrawString($"{subtotal}", boldFont, brush, 305 - MeasureString(subtotal, boldFont), YPos);
+            e.Graphics.DrawString($"{subTotalStr}", boldFont, brush, 305 - MeasureString(subTotalStr, boldFont), YPos);
             YPos += boldFont.Height + 4;
-            if (!string.IsNullOrWhiteSpace(txtDiscount.Text) && int.TryParse(txtDiscount.Text, out _))
+            if (!string.IsNullOrWhiteSpace(txtDiscount.Text) && double.TryParse(txtDiscount.Text, out discount))
             {
+                var discountStr = discount.ToString("N0") + "đ";
                 e.Graphics.DrawString($"Giảm giá", regularFont, brush, 10, YPos);
-                e.Graphics.DrawString($"{subtotal}", regularFont, brush, 305 - MeasureString(subtotal, regularFont), YPos);
+                e.Graphics.DrawString($"{discountStr}", regularFont, brush, 305 - MeasureString(discountStr, regularFont), YPos);
                 YPos += regularFont.Height + 4;
             }
+            var vipStr = chbVip.Checked ? (subtotal * 0.05).ToString("N0") + "đ" : "0đ";
             e.Graphics.DrawString($"Phí phòng lạnh (5%)", regularFont, brush, 10, YPos);
-            e.Graphics.DrawString($"{subtotal}", regularFont, brush, 305 - MeasureString(subtotal, regularFont), YPos);
+            e.Graphics.DrawString($"{vipStr}", regularFont, brush, 305 - MeasureString(vipStr, regularFont), YPos);
             YPos += regularFont.Height + 8;
+
+            var beforeTax = subtotal + subtotal * 0.05 - discount;
+            var beforeTaxStr = beforeTax.ToString("N0") + "đ";
             e.Graphics.DrawString($"Tiền trước thuế", boldFont, brush, 10, YPos);
-            e.Graphics.DrawString($"{subtotal}", boldFont, brush, 305 - MeasureString(subtotal, boldFont), YPos);
+            e.Graphics.DrawString($"{beforeTaxStr}", boldFont, brush, 305 - MeasureString(beforeTaxStr, boldFont), YPos);
             YPos += boldFont.Height + 4;
+
+            var tax = beforeTax * 0.08;
+            var taxStr = tax.ToString("N0") + "đ";
             e.Graphics.DrawString($"Thuế GTGT (8%)", regularFont, brush, 10, YPos);
-            e.Graphics.DrawString($"{subtotal}", regularFont, brush, 305 - MeasureString(subtotal, regularFont), YPos);
+            e.Graphics.DrawString($"{taxStr}", regularFont, brush, 305 - MeasureString(taxStr, regularFont), YPos);
             YPos += regularFont.Height + 10;
+
+            var total = beforeTax + tax;
+            var totalStr = total.ToString("N0") + "đ";
             e.Graphics.DrawString($"Tổng thanh toán", boldLargeConfirmFont, brush, 10, YPos);
-            e.Graphics.DrawString($"{subtotal}", boldLargeConfirmFont, brush, 307 - MeasureString(subtotal, boldLargeConfirmFont), YPos);
+            e.Graphics.DrawString($"{totalStr}", boldLargeConfirmFont, brush, 307 - MeasureString(totalStr, boldLargeConfirmFont), YPos);
             YPos += boldLargeFont.Height + 4;
+
+            if (!string.IsNullOrWhiteSpace(txtDeposit.Text) && double.TryParse(txtDeposit.Text, out deposit))
+            {
+                var depositStr = deposit.ToString("N0") + "đ";
+                e.Graphics.DrawString($"Đặt cọc", regularFont, brush, 10, YPos);
+                e.Graphics.DrawString($"{depositStr}", regularFont, brush, 305 - MeasureString(depositStr, regularFont), YPos);
+                YPos += regularFont.Height + 4;
+            }
+
             e.Graphics.DrawLine(pen, 9, YPos, 305, YPos);
             YPos += 5;
+
+            var payment = (total - deposit).ToString("N0");
             e.Graphics.DrawString($"Còn phải thu", boldFont, brush, 10, YPos);
-            e.Graphics.DrawString($"{subtotal}", boldFont, brush, 305 - MeasureString(subtotal, boldFont), YPos);
+            e.Graphics.DrawString($"{payment}", boldFont, brush, 305 - MeasureString(payment, boldFont), YPos);
             YPos += boldFont.Height + 4;
+
             e.Graphics.DrawLine(pen, 9, YPos, 305, YPos);
             YPos += regularFont.Height + 10;
+
             e.Graphics.DrawString("Vui lòng kiểm tra kỹ lại nội dung trước khi thanh toán!", boldSmall2Font, brush, 157, YPos, centerFormat);
         }
 
@@ -337,6 +378,48 @@ namespace Receipt
             }
 
             return total;
+        }
+
+        private void xóaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var selectedItem = lsvReceipt.FocusedItem;
+            if (selectedItem == null)
+            {
+                MessageBox.Show("Chưa chọn", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            lsvReceipt.Items.Remove(selectedItem);
+            NumberOrder--;
+            ReArrangeListView();
+        }
+
+        private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (lsvReceipt.SelectedItems.Count > 0)
+            {
+                // Enable the menu item if items are selected
+                contextMenuStrip1.Enabled = true;
+            }
+            else
+            {
+                // Disable the menu item if no items are selected
+                contextMenuStrip1.Enabled = false;
+            }
+        }
+
+        void ReArrangeListView()
+        {
+            for (int i = 0; i < lsvReceipt.Items.Count; i++)
+                lsvReceipt.Items[i].Text = (i + 1).ToString();
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            lsvReceipt.Items.Clear();
+            txtFoodName.Clear();
+            txtPrice.Clear();
+            nmuQuantity.Value = 0;
         }
     }
 }
