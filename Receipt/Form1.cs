@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.ListView;
 
 namespace Receipt
@@ -12,6 +11,17 @@ namespace Receipt
     {
         public int NumberOrder { get; set; } = 1;
         public float MaxWidthName { get; set; } = 105;
+        public float YPos { get; set; } = 200;
+
+        Font boldFont = new Font("Arial", 9, FontStyle.Bold);
+        Font boldLargeFont = new Font("Arial", 12, FontStyle.Bold);
+        Font boldSmallFont = new Font("Arial", 7, FontStyle.Bold);
+        Font regularFont = new Font("Arial", 8);
+        SolidBrush brush = new SolidBrush(Color.Black);
+
+        float lineHeight = 16;
+
+
         public frmReceipt()
         {
             InitializeComponent();
@@ -29,6 +39,7 @@ namespace Receipt
             var total = int.TryParse(nmuQuantity.Text, out int q) ? q * price : 0;
             string[] item = { NumberOrder.ToString(), txtFoodName.Text, nmuQuantity.Value.ToString(), price.ToString("N0"), total.ToString("N0") };
             lsvReceipt.Items.Add(new ListViewItem(item));
+            NumberOrder++;
         }
 
         private void btnPrint_Click(object sender, EventArgs e)
@@ -45,11 +56,11 @@ namespace Receipt
                 return;
             }
 
-
             // Set the paper size for the receipt (80mm width)
             PaperSize paperSize = new PaperSize("CustomReceipt", Convert.ToInt32(80 * 0.03937 * 100), 32767); // 0.03937 inch per mm
             printDocument1.DefaultPageSettings.PaperSize = paperSize;
             printDocument1.PrintPage += (s, d) => DrawListViewItems(d, lsvReceipt.Items);
+            printDocument1.PrintPage += (s, d) => DrawConfirmation(d);
             PrintPreviewDialog printPreviewDialog = new PrintPreviewDialog();
             printPreviewDialog.Document = printDocument1;
             printPreviewDialog.PrintPreviewControl.Zoom = 1.0;
@@ -61,14 +72,6 @@ namespace Receipt
 
         private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            Font boldFont = new Font("Arial", 9, FontStyle.Bold);
-            Font boldLargeFont = new Font("Arial", 12, FontStyle.Bold);
-            Font boldSmallFont = new Font("Arial", 7, FontStyle.Bold);
-            Font regularFont = new Font("Arial", 8);
-            SolidBrush brush = new SolidBrush(Color.Black);
-
-            float lineHeight = 16;
-
             StringFormat centerFormat = new StringFormat
             {
                 Alignment = StringAlignment.Center
@@ -116,6 +119,7 @@ namespace Receipt
             float x = 10; // Initial x-coordinate
             float y = 200; // Initial y-coordinate
             float spacing = 8;
+            float yMultiple = 14;
 
             // Calculate column widths based on the available space
             float columnWidth = totalColumnWidth / items[0].SubItems.Count;
@@ -137,31 +141,30 @@ namespace Receipt
 
 
             y += 20;
-
+            YPos += 20;
             // Draw data rows with gridlines
             foreach (ListViewItem item in lsvReceipt.Items)
             {
-                float yMultiple = 0;
+                var isLast = item == lsvReceipt.Items[lsvReceipt.Items.Count - 1];
                 x = 10; // Reset x-coordinate for each row
-                graphics.DrawLine(pen, x, y - 5, x, y + font.Height + 2);
                 for (int i = 0; i < item.SubItems.Count; i++)
                 {
                     switch (i)
                     {
                         case 0:
-                            drawItem(pen, x + 20, y - 5, x + 20, y + font.Height + 2, font, brush, x + 4, y, e, item.SubItems[i].Text, yMultiple);
+                            DrawItem(pen, x + 20, y - 5, x + 20, y + font.Height + 2, font, brush, x + 4, y, e, item.SubItems[i].Text, yMultiple, isLast);
                             break;
                         case 1:
-                            drawItem(pen, x + 135, y - 5, x + 135, y + font.Height + 2, font, brush, x + 22, y, e, item.SubItems[i].Text, yMultiple);
+                            DrawItem(pen, x + 135, y - 5, x + 135, y + font.Height + 2, font, brush, x + 22, y, e, item.SubItems[i].Text, yMultiple, isLast);
                             break;
                         case 2:
-                            drawItem(pen, x + 165, y - 5, x + 165, y + font.Height + 2, font, brush, x + 140, y, e, item.SubItems[i].Text, yMultiple);
+                            DrawItem(pen, x + 165, y - 5, x + 165, y + font.Height + 2, font, brush, x + 140, y, e, item.SubItems[i].Text, yMultiple, isLast);
                             break;
                         case 3:
-                            drawItem(pen, x + 225, y - 5, x + 225, y + font.Height + 2, font, brush, x + 170, y, e, item.SubItems[i].Text, yMultiple);
+                            DrawItem(pen, x + 225, y - 5, x + 225, y + font.Height + 2, font, brush, x + 165, y, e, item.SubItems[i].Text, yMultiple, isLast);
                             break;
                         case 4:
-                            drawItem(pen, x + 295, y - 5, x + 295, y + font.Height + 2, font, brush, x + 230, y, e, item.SubItems[i].Text, yMultiple);
+                            DrawItem(pen, x + 295, y - 5, x + 295, y + font.Height + 2, font, brush, x + 228, y, e, item.SubItems[i].Text, yMultiple, isLast);
                             break;
                     }
                 }
@@ -170,18 +173,24 @@ namespace Receipt
                 float textWidth = MeasureString(item.SubItems[1].Text, font);
                 if (textWidth > MaxWidthName)
                 {
+                    graphics.DrawLine(pen, x, y - 5 - yMultiple, x, y + font.Height + 2 + yMultiple);
                     var length = WordWrap(item.SubItems[1].Text, font, MaxWidthName).Length;
                     var height = length * 8;
-                    graphics.DrawLine(pen, 10, y + font.Height + 2 + height + yMultiple, 305, y + font.Height + 2 + height + yMultiple);
+                    graphics.DrawLine(pen, 10, y + font.Height + 2 + height, 305, y + font.Height + 2 + height);
+                    y += font.Height + yMultiple + spacing;
+                    YPos += font.Height + yMultiple + spacing;
                 }
                 else
-                    graphics.DrawLine(pen, 10, y + font.Height + 2 + yMultiple, 305, y + font.Height + 2 + yMultiple);
-
-                y += font.Height + spacing; // Move to the next row
+                {
+                    graphics.DrawLine(pen, x, y - 5, x, y + font.Height + 2);
+                    graphics.DrawLine(pen, 10, y + font.Height + 2, 305, y + font.Height + 2);
+                    y += font.Height + spacing; // Move to the next row
+                    YPos += font.Height + spacing; // Move to the next row
+                }
             }
         }
 
-        void drawItem(Pen pen, float x1Line, float y1Line, float x2Line, float y2Line, Font fontString, SolidBrush brush, float xString, float yString, PrintPageEventArgs e, string text, float yMultiple)
+        void DrawItem(Pen pen, float x1Line, float y1Line, float x2Line, float y2Line, Font fontString, SolidBrush brush, float xString, float yString, PrintPageEventArgs e, string text, float yMultiple, bool isLastItem)
         {
             var graphics = e.Graphics;
             float textWidth = MeasureString(text, fontString);
@@ -191,17 +200,42 @@ namespace Receipt
                 string[] lines = WordWrap(text, fontString, MaxWidthName);
                 foreach (string line in lines)
                 {
-                    graphics.DrawLine(pen, x1Line, y1Line + yMultiple, x2Line, y2Line + yMultiple);
                     graphics.DrawString(line, fontString, brush, xString, yString);
                     yString += fontString.GetHeight();
-                    yMultiple += yString;
+                    graphics.DrawLine(pen, x1Line, y1Line - yMultiple, x2Line, y2Line + yMultiple);
                 }
             }
             else
             {
-                graphics.DrawLine(pen, x1Line, y1Line + yMultiple, x2Line, y2Line + yMultiple);
-                graphics.DrawString(text, fontString, brush, xString, yString);
+                if (isLastItem)
+                {
+                    graphics.DrawLine(pen, x1Line, y1Line, x2Line, y2Line);
+                    graphics.DrawString(text, fontString, brush, xString, yString);
+                }
+                else
+                {
+                    graphics.DrawLine(pen, x1Line, y1Line - yMultiple, x2Line, y2Line + yMultiple);
+                    graphics.DrawString(text, fontString, brush, xString, yString);
+                }
             }
+        }
+
+        void DrawConfirmation(PrintPageEventArgs e)
+        {
+            e.Graphics.DrawString($"Tiền hàng", boldFont, brush, 10, YPos);
+            e.Graphics.DrawString($"Tiền hàng", boldFont, brush, 10, YPos);
+            YPos += boldFont.Height;
+            e.Graphics.DrawString($"Giảm giá", regularFont, brush, 10, YPos);
+            e.Graphics.DrawString($"Giảm giá", regularFont, brush, 10, YPos);
+            YPos += regularFont.Height;
+            e.Graphics.DrawString($"Phí phòng lạnh (5%)", regularFont, brush, 10, YPos);
+            e.Graphics.DrawString($"Phí phòng lạnh (5%)", regularFont, brush, 10, YPos);
+            YPos += regularFont.Height;
+            e.Graphics.DrawString($"Tiền trước thuế", boldFont, brush, 10, YPos);
+            e.Graphics.DrawString($"Tiền trước thuế", boldFont, brush, 10, YPos);
+            YPos += boldFont.Height;
+            e.Graphics.DrawString($"Thuế GTGT (8%)", regularFont, brush, 10, YPos);
+            e.Graphics.DrawString($"Thuế GTGT (8%)", regularFont, brush, 10, YPos);
         }
 
         float MeasureString(string text, Font font)

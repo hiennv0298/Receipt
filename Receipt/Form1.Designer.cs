@@ -53,6 +53,8 @@
             this.Total = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnPrint = new System.Windows.Forms.Button();
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
+            this.btnReset = new System.Windows.Forms.Button();
+            this.btnDelete = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nmuQuantity)).BeginInit();
@@ -143,6 +145,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.btnDelete);
             this.groupBox2.Controls.Add(this.btnAdd);
             this.groupBox2.Controls.Add(this.nmuQuantity);
             this.groupBox2.Controls.Add(this.txtPrice);
@@ -207,7 +210,7 @@
             // 
             // btnAdd
             // 
-            this.btnAdd.Location = new System.Drawing.Point(225, 139);
+            this.btnAdd.Location = new System.Drawing.Point(90, 142);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(99, 36);
             this.btnAdd.TabIndex = 5;
@@ -271,11 +274,32 @@
             // 
             this.printDocument1.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.printDocument1_PrintPage);
             // 
+            // btnReset
+            // 
+            this.btnReset.Location = new System.Drawing.Point(909, 418);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.btnReset.Size = new System.Drawing.Size(99, 36);
+            this.btnReset.TabIndex = 6;
+            this.btnReset.Text = "Reset";
+            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnPrint_Click);
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Location = new System.Drawing.Point(225, 142);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(99, 36);
+            this.btnDelete.TabIndex = 5;
+            this.btnDelete.Text = "Xóa món";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            // 
             // frmReceipt
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1149, 466);
+            this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.lsvReceipt);
             this.Controls.Add(this.groupBox2);
@@ -319,6 +343,8 @@
         private System.Windows.Forms.ColumnHeader Total;
         private System.Windows.Forms.Button btnPrint;
         private System.Drawing.Printing.PrintDocument printDocument1;
+        private System.Windows.Forms.Button btnReset;
+        private System.Windows.Forms.Button btnDelete;
     }
 }
 
