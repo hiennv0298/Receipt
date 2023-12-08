@@ -17,7 +17,7 @@ namespace Receipt
         Font boldLargeFont = new Font("Arial", 12, FontStyle.Bold);
         Font boldLargeConfirmFont = new Font("Arial", 10, FontStyle.Bold);
         Font boldSmallFont = new Font("Arial", 7, FontStyle.Bold);
-        Font boldSmall2Font = new Font("Arial", 8, FontStyle.Bold);
+        Font boldSmall2Font = new Font("Arial", 7, FontStyle.Bold);
         Font regularFont = new Font("Arial", 8);
         SolidBrush brush = new SolidBrush(Color.Black);
         Pen pen = new Pen(Color.Black);
@@ -89,14 +89,14 @@ namespace Receipt
             }
 
             // Set the paper size for the receipt (80mm width)
-            PaperSize paperSize = new PaperSize("CustomReceipt", Convert.ToInt32(80 * 0.03937 * 100), 32767); // 0.03937 inch per mm
+            PaperSize paperSize = new PaperSize("CustomReceipt", Convert.ToInt32(73 * 0.03937 * 100), 32767); // 0.03937 inch per mm
             printDocument1.DefaultPageSettings.PaperSize = paperSize;
             PrintPreviewDialog printPreviewDialog = new PrintPreviewDialog();
             printPreviewDialog.Document = printDocument1;
             printPreviewDialog.PrintPreviewControl.Zoom = 1.0;
-            DialogResult result = printPreviewDialog.ShowDialog();
+            //DialogResult result = printPreviewDialog.ShowDialog();
             // Start printing
-            // printDocument1.Print();
+            printDocument1.Print();
             orderNumber++;
             txtOrderNumber.Text = orderNumber.ToString();
             YPos = 200;
@@ -116,15 +116,15 @@ namespace Receipt
             for (int i = 0; i < headerLines.Length; i++)
             {
                 float y = i * lineHeight + 15;
-                e.Graphics.DrawString(headerLines[i], (i == 0 || i == 3) ? i == 0 ? boldFont : boldLargeFont : regularFont, brush, 157, i == 3 ? y + 10 : y, centerFormat);
+                e.Graphics.DrawString(headerLines[i], (i == 0 || i == 3) ? i == 0 ? boldFont : boldLargeFont : regularFont, brush, 145, i == 3 ? y + 10 : y, centerFormat);
             }
 
-            e.Graphics.DrawString($"Số: {txtOrderNumber.Text}", boldSmallFont, brush, 157, 100, centerFormat);
-            e.Graphics.DrawString($"Ngày: ", boldFont, brush, 10, 129);
-            e.Graphics.DrawString(dtOrderDate.Text, regularFont, brush, 50, 130);
-            e.Graphics.DrawString($"Bàn: {txtTable.Text}", boldLargeFont, brush, 8, 150);
-            e.Graphics.DrawString($"Thu ngân: ", boldFont, brush, 10, 174);
-            e.Graphics.DrawString($"{txtCashier.Text}", regularFont, brush, 75, 175);
+            e.Graphics.DrawString($"Số: {txtOrderNumber.Text}", boldSmallFont, brush, 150, 100, centerFormat);
+            e.Graphics.DrawString($"Ngày: ", boldFont, brush, 3, 129);
+            e.Graphics.DrawString(dtOrderDate.Text, regularFont, brush, 43, 130);
+            e.Graphics.DrawString($"Bàn: {txtTable.Text}", boldLargeFont, brush, 1, 150);
+            e.Graphics.DrawString($"Thu ngân: ", boldFont, brush, 3, 174);
+            e.Graphics.DrawString($"{txtCashier.Text}", regularFont, brush, 68, 175);
 
             DrawListViewItems(e, lsvReceipt.Items);
 
@@ -142,14 +142,14 @@ namespace Receipt
             SolidBrush brush = new SolidBrush(Color.Black);
 
             // Set up column widths and spacing for 80mm paper width
-            float paperWidth = 80; // in mm
+            float paperWidth = 73; // in mm
             float totalColumnWidth = paperWidth - 20; // Subtracting padding
-            float x = 10; // Initial x-coordinate
+            float x = 3; // Initial x-coordinate
             float y = 200; // Initial y-coordinate
             float spacing = 8;
             float yMultiple = 14;
 
-            graphics.DrawLine(pen, 9, y - 2, 305, y - 2);
+            graphics.DrawLine(pen, 2, y - 2, 285, y - 2);
             graphics.DrawString("#", fontBold, brush, x + 5, y);
             graphics.DrawLine(pen, x, y - 2, x, y + font.Height + 2);
             graphics.DrawLine(pen, x + 20, y - 2, x + 20, y + font.Height + 2);
@@ -160,8 +160,8 @@ namespace Receipt
             graphics.DrawString("Đơn giá", fontBold, brush, x + 170, y);
             graphics.DrawLine(pen, x + 225, y - 2, x + 225, y + font.Height + 2);
             graphics.DrawString("TT", fontBold, brush, x + 250, y);
-            graphics.DrawLine(pen, x + 295, y - 2, x + 295, y + font.Height + 2);
-            graphics.DrawLine(pen, 9, y + fontBold.Height + 2, 305, y + font.Height + 2);
+            graphics.DrawLine(pen, x + 282, y - 2, x + 282, y + font.Height + 2);
+            graphics.DrawLine(pen, 2, y + fontBold.Height + 2, 285, y + font.Height + 2);
 
             y += 20;
             YPos += 20;
@@ -176,19 +176,19 @@ namespace Receipt
                     switch (i)
                     {
                         case 0:
-                            DrawItem(pen, x + 20, y - 5, x + 20, y + font.Height + 2, font, brush, x + 4, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
+                            DrawItem(pen, x + 13, y - 5, x + 13, y + font.Height + 2, font, brush, x - 3, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
                             break;
                         case 1:
-                            DrawItem(pen, x + 135, y - 5, x + 135, y + font.Height + 2, font, brush, x + 22, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
+                            DrawItem(pen, x + 128, y - 5, x + 128, y + font.Height + 2, font, brush, x + 15, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
                             break;
                         case 2:
-                            DrawItem(pen, x + 165, y - 5, x + 165, y + font.Height + 2, font, brush, x + 140, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
+                            DrawItem(pen, x + 158, y - 5, x + 158, y + font.Height + 2, font, brush, x + 133, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
                             break;
                         case 3:
-                            DrawItem(pen, x + 225, y - 5, x + 225, y + font.Height + 2, font, brush, x + 165, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
+                            DrawItem(pen, x + 218, y - 5, x + 218, y + font.Height + 2, font, brush, x + 158, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
                             break;
                         case 4:
-                            DrawItem(pen, x + 295, y - 5, x + 295, y + font.Height + 2, font, brush, x + 228, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
+                            DrawItem(pen, x + 275, y - 5, x + 275, y + font.Height + 2, font, brush, x + 221, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
                             break;
                     }
                 }
@@ -196,17 +196,17 @@ namespace Receipt
                 // Draw horizontal line below the data row
                 if (textWidth > MaxWidthName)
                 {
-                    graphics.DrawLine(pen, x, y - 5 - yMultiple, x, y + font.Height + 2 + yMultiple);
+                    graphics.DrawLine(pen, x - 7, y - 5 - yMultiple, x - 7, y + font.Height + 2 + yMultiple);
                     var length = WordWrap(item.SubItems[1].Text, font, MaxWidthName).Length;
                     var height = length * 8;
-                    graphics.DrawLine(pen, 10, y + font.Height + 2 + height, 305, y + font.Height + 2 + height);
+                    graphics.DrawLine(pen, 3, y + font.Height + 2 + height, 285, y + font.Height + 2 + height);
                     y += font.Height + yMultiple + spacing;
                     YPos += font.Height + yMultiple + spacing;
                 }
                 else
                 {
-                    graphics.DrawLine(pen, x, y - 5, x, y + font.Height + 2);
-                    graphics.DrawLine(pen, 10, y + font.Height + 2, 305, y + font.Height + 2);
+                    graphics.DrawLine(pen, x - 7, y - 5, x - 7, y + font.Height + 2);
+                    graphics.DrawLine(pen, 3, y + font.Height + 2, 285, y + font.Height + 2);
                     y += font.Height + spacing; // Move to the next row
                     YPos += font.Height + spacing; // Move to the next row
                 }
@@ -260,59 +260,63 @@ namespace Receipt
             double discount = 0.0;
             double deposit = 0.0;
             YPos += 10;
-            e.Graphics.DrawString($"Tiền hàng", boldFont, brush, 10, YPos);
-            e.Graphics.DrawString($"{subTotalStr}", boldFont, brush, 305 - MeasureString(subTotalStr, boldFont), YPos);
+            e.Graphics.DrawString($"Tiền hàng", boldFont, brush, 3, YPos);
+            e.Graphics.DrawString($"{subTotalStr}", boldFont, brush, 285 - MeasureString(subTotalStr, boldFont), YPos);
             YPos += boldFont.Height + 4;
             if (!string.IsNullOrWhiteSpace(txtDiscount.Text) && double.TryParse(txtDiscount.Text, out discount))
             {
                 var discountStr = discount.ToString("N0") + "đ";
-                e.Graphics.DrawString($"Giảm giá", regularFont, brush, 10, YPos);
-                e.Graphics.DrawString($"{discountStr}", regularFont, brush, 305 - MeasureString(discountStr, regularFont), YPos);
+                e.Graphics.DrawString($"Giảm giá", regularFont, brush, 3, YPos);
+                e.Graphics.DrawString($"{discountStr}", regularFont, brush, 285 - MeasureString(discountStr, regularFont), YPos);
                 YPos += regularFont.Height + 4;
             }
-            var vipStr = chbVip.Checked ? (subtotal * 0.05).ToString("N0") + "đ" : "0đ";
-            e.Graphics.DrawString($"Phí phòng lạnh (5%)", regularFont, brush, 10, YPos);
-            e.Graphics.DrawString($"{vipStr}", regularFont, brush, 305 - MeasureString(vipStr, regularFont), YPos);
-            YPos += regularFont.Height + 8;
 
-            var beforeTax = subtotal + subtotal * 0.05 - discount;
+            if (chbVip.Checked)
+            {
+                var vipStr = chbVip.Checked ? (subtotal * 0.05).ToString("N0") + "đ" : "0đ";
+                e.Graphics.DrawString($"Phí phòng lạnh (5%)", regularFont, brush, 3, YPos);
+                e.Graphics.DrawString($"{vipStr}", regularFont, brush, 285 - MeasureString(vipStr, regularFont), YPos);
+                YPos += regularFont.Height + 8;
+            }
+
+            var beforeTax = chbVip.Checked ? subtotal + subtotal * 0.05 - discount : subtotal - discount;
             var beforeTaxStr = beforeTax.ToString("N0") + "đ";
-            e.Graphics.DrawString($"Tiền trước thuế", boldFont, brush, 10, YPos);
-            e.Graphics.DrawString($"{beforeTaxStr}", boldFont, brush, 305 - MeasureString(beforeTaxStr, boldFont), YPos);
+            e.Graphics.DrawString($"Tiền trước thuế", boldFont, brush, 3, YPos);
+            e.Graphics.DrawString($"{beforeTaxStr}", boldFont, brush, 285 - MeasureString(beforeTaxStr, boldFont), YPos);
             YPos += boldFont.Height + 4;
 
             var tax = beforeTax * 0.08;
             var taxStr = tax.ToString("N0") + "đ";
-            e.Graphics.DrawString($"Thuế GTGT (8%)", regularFont, brush, 10, YPos);
-            e.Graphics.DrawString($"{taxStr}", regularFont, brush, 305 - MeasureString(taxStr, regularFont), YPos);
+            e.Graphics.DrawString($"Thuế GTGT (8%)", regularFont, brush, 3, YPos);
+            e.Graphics.DrawString($"{taxStr}", regularFont, brush, 285 - MeasureString(taxStr, regularFont), YPos);
             YPos += regularFont.Height + 10;
 
             var total = beforeTax + tax;
             var totalStr = total.ToString("N0") + "đ";
-            e.Graphics.DrawString($"Tổng thanh toán", boldLargeConfirmFont, brush, 10, YPos);
-            e.Graphics.DrawString($"{totalStr}", boldLargeConfirmFont, brush, 307 - MeasureString(totalStr, boldLargeConfirmFont), YPos);
+            e.Graphics.DrawString($"Tổng thanh toán", boldLargeConfirmFont, brush, 3, YPos);
+            e.Graphics.DrawString($"{totalStr}", boldLargeConfirmFont, brush, 287 - MeasureString(totalStr, boldLargeConfirmFont), YPos);
             YPos += boldLargeFont.Height + 4;
 
             if (!string.IsNullOrWhiteSpace(txtDeposit.Text) && double.TryParse(txtDeposit.Text, out deposit))
             {
                 var depositStr = deposit.ToString("N0") + "đ";
-                e.Graphics.DrawString($"Đặt cọc", regularFont, brush, 10, YPos);
-                e.Graphics.DrawString($"{depositStr}", regularFont, brush, 305 - MeasureString(depositStr, regularFont), YPos);
+                e.Graphics.DrawString($"Đặt cọc", regularFont, brush, 3, YPos);
+                e.Graphics.DrawString($"{depositStr}", regularFont, brush, 285 - MeasureString(depositStr, regularFont), YPos);
                 YPos += regularFont.Height + 4;
             }
 
-            e.Graphics.DrawLine(pen, 9, YPos, 305, YPos);
+            e.Graphics.DrawLine(pen, 2, YPos, 298, YPos);
             YPos += 5;
 
-            var payment = (total - deposit).ToString("N0");
-            e.Graphics.DrawString($"Còn phải thu", boldFont, brush, 10, YPos);
-            e.Graphics.DrawString($"{payment}", boldFont, brush, 305 - MeasureString(payment, boldFont), YPos);
+            var payment = (total - deposit).ToString("N0") + "đ";
+            e.Graphics.DrawString($"Còn phải thu", boldFont, brush, 3, YPos);
+            e.Graphics.DrawString($"{payment}", boldFont, brush, 285 - MeasureString(payment, boldFont), YPos);
             YPos += boldFont.Height + 4;
 
-            e.Graphics.DrawLine(pen, 9, YPos, 305, YPos);
+            e.Graphics.DrawLine(pen, 2, YPos, 298, YPos);
             YPos += regularFont.Height + 10;
 
-            e.Graphics.DrawString("Vui lòng kiểm tra kỹ lại nội dung trước khi thanh toán!", boldSmall2Font, brush, 157, YPos, centerFormat);
+            e.Graphics.DrawString("Vui lòng kiểm tra kỹ lại nội dung trước khi thanh toán!", boldSmall2Font, brush, 145, YPos, centerFormat);
         }
 
         float MeasureString(string text, Font font)
@@ -420,6 +424,8 @@ namespace Receipt
             txtFoodName.Clear();
             txtPrice.Clear();
             nmuQuantity.Value = 0;
+            NumberOrder = 1;
+            YPos = 200;
         }
     }
 }
