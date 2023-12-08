@@ -96,7 +96,7 @@ namespace Receipt
             printPreviewDialog.PrintPreviewControl.Zoom = 1.0;
             DialogResult result = printPreviewDialog.ShowDialog();
             // Start printing
-            //printDocument1.Print();
+            printDocument1.Print();
             orderNumber++;
             txtOrderNumber.Text = orderNumber.ToString();
             YPos = 200;
@@ -128,8 +128,6 @@ namespace Receipt
 
             DrawListViewItems(e, lsvReceipt.Items);
 
-            // If there is more content to print, set the HasMorePages property to true
-            // This will trigger another PrintPage event
             e.HasMorePages = false;
         }
 
@@ -188,7 +186,7 @@ namespace Receipt
                             DrawItem(pen, x + 210, y - 5, x + 210, y + font.Height + 2, font, brush, 220 - MeasureString(item.SubItems[i].Text, regularFont), y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
                             break;
                         case 4:
-                            DrawItem(pen, x + 268, y - 5, x + 268, y + font.Height + 2, font, brush, 278 - MeasureString(item.SubItems[i].Text, regularFont), y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
+                            DrawItem(pen, x + 268, y - 5, x + 268, y + font.Height + 2, font, brush, 280 - MeasureString(item.SubItems[i].Text, regularFont), y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
                             break;
                     }
                 }
