@@ -49,10 +49,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>45099995B7601BFA11373185044EC6C5AF2DE769</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>01336FD92FA8C9D443D58CC145FFC9280CC62D8E</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>Receipt_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>Receipt_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -103,7 +103,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Receipt_TemporaryKey.pfx" />
+    <None Include="Receipt_1_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -13,12 +13,12 @@ namespace Receipt
         public float MaxWidthName { get; set; } = 105;
         public float YPos { get; set; } = 200;
 
-        Font boldFont = new Font("Arial", 9, FontStyle.Bold);
-        Font boldLargeFont = new Font("Arial", 12, FontStyle.Bold);
-        Font boldLargeConfirmFont = new Font("Arial", 10, FontStyle.Bold);
-        Font boldSmallFont = new Font("Arial", 7, FontStyle.Bold);
-        Font boldSmall2Font = new Font("Arial", 7, FontStyle.Bold);
-        Font regularFont = new Font("Arial", 8);
+        Font boldFont = new Font("Arial", 8, FontStyle.Bold);
+        Font boldLargeFont = new Font("Arial", 11, FontStyle.Bold);
+        Font boldLargeConfirmFont = new Font("Arial", 9, FontStyle.Bold);
+        Font boldSmallFont = new Font("Arial", 6, FontStyle.Bold);
+        Font boldSmall2Font = new Font("Arial", 6, FontStyle.Bold);
+        Font regularFont = new Font("Arial", 7);
         SolidBrush brush = new SolidBrush(Color.Black);
         Pen pen = new Pen(Color.Black);
         StringFormat centerFormat = new StringFormat
@@ -89,14 +89,14 @@ namespace Receipt
             }
 
             // Set the paper size for the receipt (80mm width)
-            PaperSize paperSize = new PaperSize("CustomReceipt", Convert.ToInt32(73 * 0.03937 * 100), 32767); // 0.03937 inch per mm
+            PaperSize paperSize = new PaperSize("CustomReceipt", Convert.ToInt32(71 * 0.03937 * 100), 32767); // 0.03937 inch per mm
             printDocument1.DefaultPageSettings.PaperSize = paperSize;
             PrintPreviewDialog printPreviewDialog = new PrintPreviewDialog();
             printPreviewDialog.Document = printDocument1;
             printPreviewDialog.PrintPreviewControl.Zoom = 1.0;
-            //DialogResult result = printPreviewDialog.ShowDialog();
+            DialogResult result = printPreviewDialog.ShowDialog();
             // Start printing
-            printDocument1.Print();
+            //printDocument1.Print();
             orderNumber++;
             txtOrderNumber.Text = orderNumber.ToString();
             YPos = 200;
@@ -119,7 +119,7 @@ namespace Receipt
                 e.Graphics.DrawString(headerLines[i], (i == 0 || i == 3) ? i == 0 ? boldFont : boldLargeFont : regularFont, brush, 145, i == 3 ? y + 10 : y, centerFormat);
             }
 
-            e.Graphics.DrawString($"Số: {txtOrderNumber.Text}", boldSmallFont, brush, 150, 100, centerFormat);
+            e.Graphics.DrawString($"Số: {txtOrderNumber.Text}", boldSmallFont, brush, 145, 100, centerFormat);
             e.Graphics.DrawString($"Ngày: ", boldFont, brush, 3, 129);
             e.Graphics.DrawString(dtOrderDate.Text, regularFont, brush, 43, 130);
             e.Graphics.DrawString($"Bàn: {txtTable.Text}", boldLargeFont, brush, 1, 150);
@@ -137,19 +137,19 @@ namespace Receipt
         {
             var graphics = e.Graphics;
             // Set up the font and brush for drawing
-            Font font = new Font("Arial", 8);
-            Font fontBold = new Font("Arial", 8, FontStyle.Bold);
+            Font font = new Font("Arial", 7);
+            Font fontBold = new Font("Arial", 7, FontStyle.Bold);
             SolidBrush brush = new SolidBrush(Color.Black);
 
             // Set up column widths and spacing for 80mm paper width
-            float paperWidth = 73; // in mm
+            float paperWidth = 71; // in mm
             float totalColumnWidth = paperWidth - 20; // Subtracting padding
             float x = 3; // Initial x-coordinate
             float y = 200; // Initial y-coordinate
             float spacing = 8;
             float yMultiple = 14;
 
-            graphics.DrawLine(pen, 2, y - 2, 285, y - 2);
+            graphics.DrawLine(pen, 2, y - 2, 280, y - 2);
             graphics.DrawString("#", fontBold, brush, x + 5, y);
             graphics.DrawLine(pen, x, y - 2, x, y + font.Height + 2);
             graphics.DrawLine(pen, x + 20, y - 2, x + 20, y + font.Height + 2);
@@ -158,10 +158,10 @@ namespace Receipt
             graphics.DrawString("SL", fontBold, brush, x + 140, y);
             graphics.DrawLine(pen, x + 165, y - 2, x + 165, y + font.Height + 2);
             graphics.DrawString("Đơn giá", fontBold, brush, x + 170, y);
-            graphics.DrawLine(pen, x + 225, y - 2, x + 225, y + font.Height + 2);
-            graphics.DrawString("TT", fontBold, brush, x + 250, y);
-            graphics.DrawLine(pen, x + 282, y - 2, x + 282, y + font.Height + 2);
-            graphics.DrawLine(pen, 2, y + fontBold.Height + 2, 285, y + font.Height + 2);
+            graphics.DrawLine(pen, x + 217, y - 2, x + 217, y + font.Height + 2);
+            graphics.DrawString("TT", fontBold, brush, x + 240, y);
+            graphics.DrawLine(pen, x + 275, y - 2, x + 275, y + font.Height + 2);
+            graphics.DrawLine(pen, 2, y + fontBold.Height + 2, 280, y + font.Height + 2);
 
             y += 20;
             YPos += 20;
@@ -185,10 +185,10 @@ namespace Receipt
                             DrawItem(pen, x + 158, y - 5, x + 158, y + font.Height + 2, font, brush, x + 133, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
                             break;
                         case 3:
-                            DrawItem(pen, x + 218, y - 5, x + 218, y + font.Height + 2, font, brush, x + 158, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
+                            DrawItem(pen, x + 210, y - 5, x + 210, y + font.Height + 2, font, brush, 220 - MeasureString(item.SubItems[i].Text, regularFont), y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
                             break;
                         case 4:
-                            DrawItem(pen, x + 275, y - 5, x + 275, y + font.Height + 2, font, brush, x + 221, y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
+                            DrawItem(pen, x + 268, y - 5, x + 268, y + font.Height + 2, font, brush, 278 - MeasureString(item.SubItems[i].Text, regularFont), y, e, item.SubItems[i].Text, yMultiple, isLast, textWidth > MaxWidthName);
                             break;
                     }
                 }
@@ -261,47 +261,74 @@ namespace Receipt
             double deposit = 0.0;
             YPos += 10;
             e.Graphics.DrawString($"Tiền hàng", boldFont, brush, 3, YPos);
-            e.Graphics.DrawString($"{subTotalStr}", boldFont, brush, 285 - MeasureString(subTotalStr, boldFont), YPos);
+            e.Graphics.DrawString($"{subTotalStr}", boldFont, brush, 278 - MeasureString(subTotalStr, boldFont), YPos);
             YPos += boldFont.Height + 4;
             if (!string.IsNullOrWhiteSpace(txtDiscount.Text) && double.TryParse(txtDiscount.Text, out discount))
             {
                 var discountStr = discount.ToString("N0") + "đ";
                 e.Graphics.DrawString($"Giảm giá", regularFont, brush, 3, YPos);
-                e.Graphics.DrawString($"{discountStr}", regularFont, brush, 285 - MeasureString(discountStr, regularFont), YPos);
+                e.Graphics.DrawString($"{discountStr}", regularFont, brush, 278 - MeasureString(discountStr, regularFont), YPos);
                 YPos += regularFont.Height + 4;
             }
 
-            if (chbVip.Checked)
+            if (cbbForm.Text == "Mẫu 1")
             {
-                var vipStr = chbVip.Checked ? (subtotal * 0.05).ToString("N0") + "đ" : "0đ";
-                e.Graphics.DrawString($"Phí phòng lạnh (5%)", regularFont, brush, 3, YPos);
-                e.Graphics.DrawString($"{vipStr}", regularFont, brush, 285 - MeasureString(vipStr, regularFont), YPos);
-                YPos += regularFont.Height + 8;
+                if (chbVip.Checked)
+                {
+                    var vipStr = chbVip.Checked ? (subtotal * 0.05).ToString("N0") + "đ" : "0đ";
+                    e.Graphics.DrawString($"Phí phòng lạnh (5%)", regularFont, brush, 3, YPos);
+                    e.Graphics.DrawString($"{vipStr}", regularFont, brush, 278 - MeasureString(vipStr, regularFont), YPos);
+                    YPos += regularFont.Height + 8;
+                }
+            }
+            else
+            {
+                if (chbVip.Checked)
+                {
+                    var vipStr = chbVip.Checked ? (subtotal * 0.1).ToString("N0") + "đ" : "0đ";
+                    e.Graphics.DrawString($"Phí phòng lạnh (10%)", regularFont, brush, 3, YPos);
+                    e.Graphics.DrawString($"{vipStr}", regularFont, brush, 278 - MeasureString(vipStr, regularFont), YPos);
+                    YPos += regularFont.Height + 8;
+                }
+            }
+            var beforeTax = 0.0;
+            var tax = 0.0;
+
+            if (cbbForm.Text == "Mẫu 1")
+            {
+                beforeTax = chbVip.Checked ? subtotal + subtotal * 0.05 - discount : subtotal - discount;
+                var beforeTaxStr = beforeTax.ToString("N0") + "đ";
+                e.Graphics.DrawString($"Tiền trước thuế", boldFont, brush, 3, YPos);
+                e.Graphics.DrawString($"{beforeTaxStr}", boldFont, brush, 278 - MeasureString(beforeTaxStr, boldFont), YPos);
+                YPos += boldFont.Height + 4;
+
+                tax = beforeTax * 0.08;
+                var taxStr = tax.ToString("N0") + "đ";
+                e.Graphics.DrawString($"Thuế GTGT (8%)", regularFont, brush, 3, YPos);
+                e.Graphics.DrawString($"{taxStr}", regularFont, brush, 278 - MeasureString(taxStr, regularFont), YPos);
+                YPos += regularFont.Height + 10;
             }
 
-            var beforeTax = chbVip.Checked ? subtotal + subtotal * 0.05 - discount : subtotal - discount;
-            var beforeTaxStr = beforeTax.ToString("N0") + "đ";
-            e.Graphics.DrawString($"Tiền trước thuế", boldFont, brush, 3, YPos);
-            e.Graphics.DrawString($"{beforeTaxStr}", boldFont, brush, 285 - MeasureString(beforeTaxStr, boldFont), YPos);
-            YPos += boldFont.Height + 4;
+            var total = 0.0;
+            if (cbbForm.Text == "Mẫu 1")
+            {
+                total = beforeTax + tax;
+            }
+            else
+            {
+                total = subtotal;
+            }
 
-            var tax = beforeTax * 0.08;
-            var taxStr = tax.ToString("N0") + "đ";
-            e.Graphics.DrawString($"Thuế GTGT (8%)", regularFont, brush, 3, YPos);
-            e.Graphics.DrawString($"{taxStr}", regularFont, brush, 285 - MeasureString(taxStr, regularFont), YPos);
-            YPos += regularFont.Height + 10;
-
-            var total = beforeTax + tax;
             var totalStr = total.ToString("N0") + "đ";
             e.Graphics.DrawString($"Tổng thanh toán", boldLargeConfirmFont, brush, 3, YPos);
-            e.Graphics.DrawString($"{totalStr}", boldLargeConfirmFont, brush, 287 - MeasureString(totalStr, boldLargeConfirmFont), YPos);
+            e.Graphics.DrawString($"{totalStr}", boldLargeConfirmFont, brush, 275 - MeasureString(totalStr, boldLargeConfirmFont), YPos);
             YPos += boldLargeFont.Height + 4;
 
             if (!string.IsNullOrWhiteSpace(txtDeposit.Text) && double.TryParse(txtDeposit.Text, out deposit))
             {
                 var depositStr = deposit.ToString("N0") + "đ";
                 e.Graphics.DrawString($"Đặt cọc", regularFont, brush, 3, YPos);
-                e.Graphics.DrawString($"{depositStr}", regularFont, brush, 285 - MeasureString(depositStr, regularFont), YPos);
+                e.Graphics.DrawString($"{depositStr}", regularFont, brush, 278 - MeasureString(depositStr, regularFont), YPos);
                 YPos += regularFont.Height + 4;
             }
 
@@ -310,11 +337,17 @@ namespace Receipt
 
             var payment = (total - deposit).ToString("N0") + "đ";
             e.Graphics.DrawString($"Còn phải thu", boldFont, brush, 3, YPos);
-            e.Graphics.DrawString($"{payment}", boldFont, brush, 285 - MeasureString(payment, boldFont), YPos);
+            e.Graphics.DrawString($"{payment}", boldFont, brush, 278 - MeasureString(payment, boldFont), YPos);
             YPos += boldFont.Height + 4;
 
             e.Graphics.DrawLine(pen, 2, YPos, 298, YPos);
             YPos += regularFont.Height + 10;
+
+            if (cbbForm.Text == "Mẫu 2")
+            {
+                e.Graphics.DrawString("Giá trên chưa bao gồm thuế GTGT", boldSmall2Font, brush, 145, YPos, centerFormat);
+                YPos += boldSmall2Font.Height + 4;
+            }
 
             e.Graphics.DrawString("Vui lòng kiểm tra kỹ lại nội dung trước khi thanh toán!", boldSmall2Font, brush, 145, YPos, centerFormat);
         }
@@ -384,20 +417,6 @@ namespace Receipt
             return total;
         }
 
-        private void xóaToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var selectedItem = lsvReceipt.FocusedItem;
-            if (selectedItem == null)
-            {
-                MessageBox.Show("Chưa chọn", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            lsvReceipt.Items.Remove(selectedItem);
-            NumberOrder--;
-            ReArrangeListView();
-        }
-
         private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (lsvReceipt.SelectedItems.Count > 0)
@@ -426,6 +445,54 @@ namespace Receipt
             nmuQuantity.Value = 0;
             NumberOrder = 1;
             YPos = 200;
+        }
+
+
+        private void xóaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var selectedItem = lsvReceipt.FocusedItem;
+            if (selectedItem == null)
+            {
+                MessageBox.Show("Chưa chọn", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            lsvReceipt.Items.Remove(selectedItem);
+            NumberOrder--;
+            ReArrangeListView();
+        }
+
+
+        private void sửaSốLượngToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var selectedItem = lsvReceipt.FocusedItem;
+            if (selectedItem == null)
+            {
+                MessageBox.Show("Chưa chọn", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            btnUpdate.Enabled = true;
+            btnAdd.Enabled = false;
+            txtFoodName.Text = selectedItem.SubItems[1].Text;
+            txtPrice.Text = selectedItem.SubItems[3].Text.Replace(",", "");
+            nmuQuantity.Text = selectedItem.SubItems[2].Text;
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            var selectedItem = lsvReceipt.FocusedItem;
+            if (selectedItem == null)
+            {
+                MessageBox.Show("Chưa chọn", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            btnUpdate.Enabled = false;
+            btnAdd.Enabled = true;
+            selectedItem.SubItems[1].Text = txtFoodName.Text;
+            selectedItem.SubItems[3].Text = (int.TryParse(txtPrice.Text, out int p1) ? p1 : 0).ToString("N0");
+            selectedItem.SubItems[2].Text = nmuQuantity.Text;
+            selectedItem.SubItems[4].Text = (nmuQuantity.Value * (int.TryParse(txtPrice.Text, out int p) ? p : 0)).ToString("N0");
         }
     }
 }
